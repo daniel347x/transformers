@@ -1479,7 +1479,13 @@ class SequenceSummary(nn.Module):
                 cls_index = cls_index.unsqueeze(-1).unsqueeze(-1)
                 cls_index = cls_index.expand((-1,) * (cls_index.dim() - 1) + (hidden_states.size(-1),))
             # shape of cls_index: (bsz, XX, 1, hidden_size) where XX are optional leading dim of hidden_states
+
+            #################################################################
+            # Pulls the FINAL hidden state (or the cls_index-th hidden state)
+            # from all sequences in each batch item
+            #################################################################
             output = hidden_states.gather(-2, cls_index).squeeze(-2)  # shape (bsz, XX, hidden_size)
+
         elif self.summary_type == "attn":
             raise NotImplementedError
 
