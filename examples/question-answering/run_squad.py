@@ -681,11 +681,12 @@ def main():
     # Setup distant debugging if needed
     if args.server_ip and args.server_port:
         # Distant debugging - see https://code.visualstudio.com/docs/python/debugging#_attach-to-a-local-script
-        import ptvsd
+        import debugpy
 
         print("Waiting for debugger attach")
-        ptvsd.enable_attach(address=(args.server_ip, args.server_port), redirect_output=True)
-        ptvsd.wait_for_attach()
+        # server_ip: 0.0.0.0, server_port: 5678
+        debugpy.listen((args.server_ip, args.server_port))
+        debugpy.wait_for_client()
 
     # Setup CUDA, GPU & distributed training
     if args.local_rank == -1 or args.no_cuda:
