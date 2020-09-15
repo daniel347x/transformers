@@ -458,7 +458,7 @@ GPT2_INPUTS_DOCSTRING = r"""
 """
 
 
-# @tag-squad-main-022
+# @tag-squad-main-022 - class GPT2Model
 @add_start_docstrings(
     "The bare GPT2 Model transformer outputting raw hidden-states without any specific head on top.",
     GPT2_START_DOCSTRING,

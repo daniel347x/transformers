@@ -29,7 +29,7 @@ from torch.utils.data import DataLoader, RandomSampler, SequentialSampler
 from torch.utils.data.distributed import DistributedSampler
 from tqdm import tqdm, trange
 
-# @tag-squad-main-020
+# @tag-squad-main-020 - from transformers import MODEL_FOR_QUESTION_ANSWERING_MAPPING
 from transformers import (
     MODEL_FOR_QUESTION_ANSWERING_MAPPING,
     WEIGHTS_NAME,
@@ -56,7 +56,7 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
-# @tag-squad-main-020
+# @tag-squad-main-020 - MODEL_TYPES = tuple(conf.model_type for conf in MODEL_CONFIG_CLASSES)
 MODEL_CONFIG_CLASSES = list(MODEL_FOR_QUESTION_ANSWERING_MAPPING.keys())
 MODEL_TYPES = tuple(conf.model_type for conf in MODEL_CONFIG_CLASSES)
 
@@ -401,6 +401,7 @@ def evaluate(args, model, tokenizer, prefix=""):
     return results
 
 
+# @tag-squad-main-030 - def load_and_cache_examples()
 def load_and_cache_examples(args, tokenizer, evaluate=False, output_examples=False):
     if args.local_rank not in [-1, 0] and not evaluate:
         # Make sure only the first process in distributed training process the dataset, and the others will use the cache
@@ -472,6 +473,7 @@ def load_and_cache_examples(args, tokenizer, evaluate=False, output_examples=Fal
 
 
 # @tag-squad-main-000 - def main()
+# @tag-squad-main-023 - parser = argparse.ArgumentParser()
 def main():
     parser = argparse.ArgumentParser()
 

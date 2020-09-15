@@ -47,8 +47,8 @@ BERT_PRETRAINED_CONFIG_ARCHIVE_MAP = {
     # See all BERT models at https://huggingface.co/models?filter=bert
 }
 
-# @tag-squad-main-020
-# @tag-squad-main-021
+# @tag-squad-main-020 - class BertConfig
+# @tag-squad-main-021 - class BertConfig
 class BertConfig(PretrainedConfig):
     r"""
     This is the configuration class to store the configuration of a :class:`~transformers.BertModel`.

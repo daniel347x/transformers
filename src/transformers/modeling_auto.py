@@ -342,7 +342,7 @@ MODEL_FOR_SEQUENCE_CLASSIFICATION_MAPPING = OrderedDict(
     ]
 )
 
-# @tag-squad-main-020
+# @tag-squad-main-020 - MODEL_FOR_QUESTION_ANSWERING_MAPPING = OrderedDict((BertConfig, BertForQuestionAnswering), (XLMConfig, XLMForQuestionAnsweringSimple), etc.)
 MODEL_FOR_QUESTION_ANSWERING_MAPPING = OrderedDict(
     [
         (DistilBertConfig, DistilBertForQuestionAnswering),
