@@ -240,6 +240,7 @@ if is_torch_available():
         AlbertPreTrainedModel,
         load_tf_weights_in_albert,
     )
+    # @tag-squad-main-020
     from .modeling_auto import (
         MODEL_FOR_CAUSAL_LM_MAPPING,
         MODEL_FOR_MASKED_LM_MAPPING,
