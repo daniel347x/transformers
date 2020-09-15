@@ -1171,6 +1171,7 @@ class AutoModelForSequenceClassification:
         )
 
 
+# @tag-squad-main-014 - class AutoModelForQuestionAnswering
 class AutoModelForQuestionAnswering:
     r"""
     This is a generic model class that will be instantiated as one of the model classes of the library---with a
@@ -1256,6 +1257,7 @@ class AutoModelForQuestionAnswering:
                 pretrained_model_name_or_path, return_unused_kwargs=True, **kwargs
             )
 
+        # @tag-squad-main-015 - for config_class, model_class in MODEL_FOR_QUESTION_ANSWERING_MAPPING.items():
         for config_class, model_class in MODEL_FOR_QUESTION_ANSWERING_MAPPING.items():
             if isinstance(config, config_class):
                 return model_class.from_pretrained(pretrained_model_name_or_path, *model_args, config=config, **kwargs)

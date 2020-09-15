@@ -28,6 +28,7 @@ from .utils import logging
 logger = logging.get_logger(__name__)
 
 
+# @tag-squad-main-010 - class PretrainedConfig
 class PretrainedConfig(object):
     r"""Base class for all configuration classes.
     Handles a few parameters common to all models' configurations as well as methods for loading/downloading/saving
@@ -312,6 +313,7 @@ class PretrainedConfig(object):
         config_dict, kwargs = cls.get_config_dict(pretrained_model_name_or_path, **kwargs)
         return cls.from_dict(config_dict, **kwargs)
 
+    # @tag-squad-main-004 - PretrainedConfig::get_config_dict()
     @classmethod
     def get_config_dict(cls, pretrained_model_name_or_path: str, **kwargs) -> Tuple[Dict[str, Any], Dict[str, Any]]:
         """
@@ -337,12 +339,14 @@ class PretrainedConfig(object):
         elif os.path.isfile(pretrained_model_name_or_path) or is_remote_url(pretrained_model_name_or_path):
             config_file = pretrained_model_name_or_path
         else:
+            # @tag-squad-main-005 - config_file = hf_bucket_url(...)
             config_file = hf_bucket_url(
                 pretrained_model_name_or_path, filename=CONFIG_NAME, use_cdn=False, mirror=None
             )
 
         try:
             # Load from URL or cache if already cached
+            # @tag-squad-main-005 - resolved_config_file = cached_path(config_file, cache_dir=cache_dir, ...)
             resolved_config_file = cached_path(
                 config_file,
                 cache_dir=cache_dir,
@@ -354,6 +358,7 @@ class PretrainedConfig(object):
             # Load config dict
             if resolved_config_file is None:
                 raise EnvironmentError
+            # @tag-squad-main-005 - config_dict = cls._dict_from_json_file(resolved_config_file)
             config_dict = cls._dict_from_json_file(resolved_config_file)
 
         except EnvironmentError:
@@ -397,6 +402,7 @@ class PretrainedConfig(object):
         """
         return_unused_kwargs = kwargs.pop("return_unused_kwargs", False)
 
+        # @tag-squad-main-011 - config = cls(**config_dict)
         config = cls(**config_dict)
 
         if hasattr(config, "pruned_heads"):

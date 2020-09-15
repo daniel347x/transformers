@@ -77,7 +77,7 @@ ALL_PRETRAINED_CONFIG_ARCHIVE_MAP = dict(
     for key, value, in pretrained_map.items()
 )
 
-
+# @tag-squad-main-007 - CONFIG_MAPPING = OrderedDict
 CONFIG_MAPPING = OrderedDict(
     [
         ("retribert", RetriBertConfig),
@@ -221,6 +221,7 @@ class AutoConfig:
             )
         )
 
+    # @tag-squad-main-003 - AutoConfig::from_pretrained()
     @classmethod
     @replace_list_option_in_docstrings()
     def from_pretrained(cls, pretrained_model_name_or_path, **kwargs):
@@ -296,6 +297,7 @@ class AutoConfig:
             >>> config.unused_kwargs
             {'foo': False}
         """
+        # @tag-squad-main-004 - config_dict, _ = PretrainedConfig.get_config_dict(pretrained_model_name_or_path, **kwargs)
         config_dict, _ = PretrainedConfig.get_config_dict(pretrained_model_name_or_path, **kwargs)
 
         if "model_type" in config_dict:
@@ -303,8 +305,10 @@ class AutoConfig:
             return config_class.from_dict(config_dict, **kwargs)
         else:
             # Fallback: use pattern matching on the string.
+            # @tag-squad-main-006 - for pattern, config_class in CONFIG_MAPPING.items():
             for pattern, config_class in CONFIG_MAPPING.items():
                 if pattern in pretrained_model_name_or_path:
+                    # @tag-squad-main-008 - return config_class.from_dict(config_dict, **kwargs)
                     return config_class.from_dict(config_dict, **kwargs)
 
         raise ValueError(

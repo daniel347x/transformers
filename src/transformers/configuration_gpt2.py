@@ -29,7 +29,7 @@ GPT2_PRETRAINED_CONFIG_ARCHIVE_MAP = {
     "distilgpt2": "https://s3.amazonaws.com/models.huggingface.co/bert/distilgpt2-config.json",
 }
 
-
+# @tag-squad-main-009 - class GPT2Config(PretrainedConfig)
 class GPT2Config(PretrainedConfig):
     """
     This is the configuration class to store the configuration of a :class:`~transformers.GPT2Model`.
@@ -114,6 +114,7 @@ class GPT2Config(PretrainedConfig):
 
     model_type = "gpt2"
 
+    # @tag-squad-main-012 - GPT2Config::__init__
     def __init__(
         self,
         vocab_size=50257,

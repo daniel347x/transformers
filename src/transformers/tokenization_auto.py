@@ -86,6 +86,7 @@ from .utils import logging
 logger = logging.get_logger(__name__)
 
 
+# @tag-squad-main-012-d - TOKENIZER_MAPPING = OrderedDict((GPT2Config, GPT2Tokenizer))
 TOKENIZER_MAPPING = OrderedDict(
     [
         (RetriBertConfig, (RetriBertTokenizer, RetriBertTokenizerFast)),
@@ -137,6 +138,7 @@ class AutoTokenizer:
             "using the `AutoTokenizer.from_pretrained(pretrained_model_name_or_path)` method."
         )
 
+    # @tag-squad-main-012 - AutoTokenizer::from_pretrained()
     @classmethod
     @replace_list_option_in_docstrings(SLOW_TOKENIZER_MAPPING)
     def from_pretrained(cls, pretrained_model_name_or_path, *inputs, **kwargs):
@@ -210,6 +212,7 @@ class AutoTokenizer:
 
         use_fast = kwargs.pop("use_fast", False)
 
+        # @tag-squad-main-012 - config.tokenizer_class is None by default for GPT2/Squad
         if config.tokenizer_class is not None:
             if use_fast and not config.tokenizer_class.endswith("Fast"):
                 tokenizer_class_candidate = f"{config.tokenizer_class}Fast"
@@ -233,6 +236,7 @@ class AutoTokenizer:
                 )
             config = config.encoder
 
+        # @tag-squad-main-012-c - tokenizer pulled from TOKENIZER_MAPPING
         for config_class, (tokenizer_class_py, tokenizer_class_fast) in TOKENIZER_MAPPING.items():
             if isinstance(config, config_class):
                 if tokenizer_class_fast and use_fast:
