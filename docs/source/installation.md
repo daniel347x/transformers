@@ -3,7 +3,7 @@
 🤗 Transformers is tested on Python 3.6+, and PyTorch 1.1.0+ or TensorFlow 2.0+.
 
 You should install 🤗 Transformers in a [virtual environment](https://docs.python.org/3/library/venv.html). If you're
-unfamiliar with Python virtual environments, check out the [user guide](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/). Create a virtual environment with the version of Python you're going 
+unfamiliar with Python virtual environments, check out the [user guide](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/). Create a virtual environment with the version of Python you're going
 to use and activate it.
 
 Now, if you want to use 🤗 Transformers, you can install it with pip. If you'd like to play with the examples, you
@@ -12,8 +12,8 @@ must install it from source.
 ## Installation with pip
 
 First you need to install one of, or both, TensorFlow 2.0 and PyTorch.
-Please refer to [TensorFlow installation page](https://www.tensorflow.org/install/pip#tensorflow-2.0-rc-is-available) 
-and/or [PyTorch installation page](https://pytorch.org/get-started/locally/#start-locally) regarding the specific 
+Please refer to [TensorFlow installation page](https://www.tensorflow.org/install/pip#tensorflow-2.0-rc-is-available)
+and/or [PyTorch installation page](https://pytorch.org/get-started/locally/#start-locally) regarding the specific
 install command for your platform.
 
 When TensorFlow 2.0 and/or PyTorch has been installed, 🤗 Transformers can be installed using pip as follows:
@@ -58,7 +58,7 @@ cd transformers
 pip install -e .
 ```
 
-Again, you can run 
+Again, you can run
 
 ```bash
 python -c "from transformers import pipeline; print(pipeline('sentiment-analysis')('I hate you'))"
@@ -77,6 +77,7 @@ cache home followed by ``/transformers/`` (even if you don't have PyTorch instal
   * shell environment variable ``XDG_CACHE_HOME`` + ``/torch/``
   * default: ``~/.cache/torch/``
 
+@tag-squad-main-005 - cache_dir = ~/.cache/torch/transformers/
 So if you don't have any specific environment variable set, the cache directory will be at
 ``~/.cache/torch/transformers/``.
 
@@ -94,7 +95,7 @@ faster, and cheaper. Feel free to contact us privately if you need any help.
 
 You should check out our [swift-coreml-transformers](https://github.com/huggingface/swift-coreml-transformers) repo.
 
-It contains a set of tools to convert PyTorch or TensorFlow 2.0 trained Transformer models (currently contains `GPT-2`, 
+It contains a set of tools to convert PyTorch or TensorFlow 2.0 trained Transformer models (currently contains `GPT-2`,
 `DistilGPT-2`, `BERT`, and `DistilBERT`) to CoreML models that run on iOS devices.
 
 At some point in the future, you'll be able to seamlessly move from pre-training or fine-tuning models in PyTorch or

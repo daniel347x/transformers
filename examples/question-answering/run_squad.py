@@ -469,6 +469,7 @@ def load_and_cache_examples(args, tokenizer, evaluate=False, output_examples=Fal
     return dataset
 
 
+# @tag-squad-main-000 - def main()
 def main():
     parser = argparse.ArgumentParser()
 
@@ -722,6 +723,8 @@ def main():
         # Make sure only the first process in distributed training will download model & vocab
         torch.distributed.barrier()
 
+    # @tag-squad-main-001 (skipped)
+    # @tag-squad-main-002 - config = AutoConfig.from_pretrained; tokenizer = AutoTokenizer.from_pretrained; model = AutoModelForQuestionAnswering.from_pretrained
     args.model_type = args.model_type.lower()
     config = AutoConfig.from_pretrained(
         args.config_name if args.config_name else args.model_name_or_path,
@@ -732,6 +735,7 @@ def main():
         do_lower_case=args.do_lower_case,
         cache_dir=args.cache_dir if args.cache_dir else None,
     )
+    # @tag-squad-main-013 - model = AutoModelForQuestionAnswering.from_pretrained()
     model = AutoModelForQuestionAnswering.from_pretrained(
         args.model_name_or_path,
         from_tf=bool(".ckpt" in args.model_name_or_path),

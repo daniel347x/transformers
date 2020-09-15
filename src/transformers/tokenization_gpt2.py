@@ -100,6 +100,7 @@ def get_pairs(word):
     return pairs
 
 
+# @tag-squad-main-012-e - class GPT2Tokenizer
 class GPT2Tokenizer(PreTrainedTokenizer):
     """
     GPT-2 BPE tokenizer, using byte-level Byte-Pair-Encoding.
