@@ -124,8 +124,11 @@ def main():
     try:
         processor = processors[data_args.task_name]()
         label_list = processor.get_labels()
+
         # @tag-squad-mc-101
+        # I'm pretty sure num_labels is unused for this task
         num_labels = len(label_list)
+
     except KeyError:
         raise ValueError("Task not found: %s" % (data_args.task_name))
 
@@ -138,7 +141,10 @@ def main():
     # @tag-squad-mc-102
     config = AutoConfig.from_pretrained(
         model_args.config_name if model_args.config_name else model_args.model_name_or_path,
+
+        # I'm pretty sure num_labels is unused for this task
         num_labels=num_labels,
+
         finetuning_task=data_args.task_name,
         cache_dir=model_args.cache_dir,
     )
