@@ -382,6 +382,7 @@ MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING = OrderedDict(
     ]
 )
 
+# @tag-squad-mc-105
 MODEL_FOR_MULTIPLE_CHOICE_MAPPING = OrderedDict(
     [
         (CamembertConfig, CamembertForMultipleChoice),
@@ -1422,6 +1423,7 @@ class AutoModelForMultipleChoice:
             )
         )
 
+    # @tag-squad-mc-104
     @classmethod
     @replace_list_option_in_docstrings(MODEL_FOR_MULTIPLE_CHOICE_MAPPING)
     @add_start_docstrings(

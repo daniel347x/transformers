@@ -701,6 +701,7 @@ BERT_INPUTS_DOCSTRING = r"""
 """
 
 
+# @tag-squad-bert-214
 @add_start_docstrings(
     "The bare Bert Model transformer outputting raw hidden-states without any specific head on top.",
     BERT_START_DOCSTRING,
@@ -1355,6 +1356,7 @@ class BertForSequenceClassification(BertPreTrainedModel):
         )
 
 
+# @tag-squad-bert-201
 @add_start_docstrings(
     """Bert Model with a multiple choice classification head on top (a linear layer on top of
     the pooled output and a softmax) e.g. for RocStories/SWAG tasks. """,
@@ -1364,7 +1366,9 @@ class BertForMultipleChoice(BertPreTrainedModel):
     def __init__(self, config):
         super().__init__(config)
 
+        # @tag-squad-bert-213: internally, BertModel returns both standard output of size [N, seq_len, hidden_size] AND a pooled_output of size [N, hidden_size], choosing only the first token in every sequence
         self.bert = BertModel(config)
+
         self.dropout = nn.Dropout(config.hidden_dropout_prob)
         self.classifier = nn.Linear(config.hidden_size, 1)
 
@@ -1421,10 +1425,15 @@ class BertForMultipleChoice(BertPreTrainedModel):
             return_dict=return_dict,
         )
 
+        # @tag-squad-bert-210 - POOLED output (the second entry in the tuple that was returned). Pooled output returns hidden_size for only the FIRST output token of every sequence.
         pooled_output = outputs[1]
 
         pooled_output = self.dropout(pooled_output)
+
+        # @tag-squad-bert-211 - The SINGLE vector (of length hidden_size) for every sequence is FURTHER collapsed to a length of 1
         logits = self.classifier(pooled_output)
+
+        # @tag-squad-bert-212 - The sentences are assumed to have been passed in as one of [N, num_choices, seq_len] or perhaps [N * num_choices, seq_len] (I haven't looked yet) - so that here, they are viewed as [N, num_choices] allowing for a SoftMax over the choices
         reshaped_logits = logits.view(-1, num_choices)
 
         loss = None

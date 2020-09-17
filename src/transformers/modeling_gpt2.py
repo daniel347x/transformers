@@ -757,6 +757,7 @@ class GPT2LMHeadModel(GPT2PreTrainedModel):
         )
 
 
+# @tag-squad-bert-250
 @add_start_docstrings(
     """The GPT2 Model transformer with a language modeling and a multiple-choice classification
     head on top e.g. for RocStories/SWAG tasks. The two heads are two linear layers.
@@ -768,6 +769,7 @@ class GPT2LMHeadModel(GPT2PreTrainedModel):
 class GPT2DoubleHeadsModel(GPT2PreTrainedModel):
     def __init__(self, config):
         super().__init__(config)
+        # @tag-squad-bert-202
         config.num_labels = 1
         self.transformer = GPT2Model(config)
         self.lm_head = nn.Linear(config.n_embd, config.vocab_size, bias=False)

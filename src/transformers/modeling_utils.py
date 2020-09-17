@@ -1395,6 +1395,7 @@ class SQuADHead(nn.Module):
                 )
 
 
+# @tag-squad-bert-203
 class SequenceSummary(nn.Module):
     r"""
     Compute a single vector summary of a sequence hidden states.
