@@ -505,6 +505,7 @@ class BertEncoder(nn.Module):
         )
 
 
+# @tag-squad-bert-270
 class BertPooler(nn.Module):
     def __init__(self, config):
         super().__init__()
