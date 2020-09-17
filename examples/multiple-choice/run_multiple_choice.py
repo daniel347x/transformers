@@ -83,6 +83,7 @@ class DataTrainingArguments:
     )
 
 
+# @tag-squad-mc-100
 def main():
     # See all possible arguments in src/transformers/training_args.py
     # or by passing the --help flag to this script.
@@ -123,6 +124,7 @@ def main():
     try:
         processor = processors[data_args.task_name]()
         label_list = processor.get_labels()
+        # @tag-squad-mc-101
         num_labels = len(label_list)
     except KeyError:
         raise ValueError("Task not found: %s" % (data_args.task_name))
@@ -133,6 +135,7 @@ def main():
     # The .from_pretrained methods guarantee that only one local process can concurrently
     # download model & vocab.
 
+    # @tag-squad-mc-102
     config = AutoConfig.from_pretrained(
         model_args.config_name if model_args.config_name else model_args.model_name_or_path,
         num_labels=num_labels,
