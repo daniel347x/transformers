@@ -1718,6 +1718,7 @@ class PreTrainedTokenizerBase(SpecialTokensMixin):
                 string using the ``tokenize`` method) or a list of integers (tokenized string ids using the
                 ``convert_tokens_to_ids`` method).
         """
+        # @tag-squad-main-103
         encoded_inputs = self.encode_plus(
             text,
             text_pair=text_pair,
@@ -1975,6 +1976,7 @@ class PreTrainedTokenizerBase(SpecialTokensMixin):
                 **kwargs,
             )
 
+    # @tag-squad-main-102
     @add_end_docstrings(ENCODE_KWARGS_DOCSTRING, ENCODE_PLUS_ADDITIONAL_KWARGS_DOCSTRING)
     def encode_plus(
         self,
@@ -2459,6 +2461,7 @@ class PreTrainedTokenizerBase(SpecialTokensMixin):
             sequence = self.build_inputs_with_special_tokens(ids, pair_ids)
             token_type_ids = self.create_token_type_ids_from_sequences(ids, pair_ids)
         else:
+            # @tag-squad-main-100
             sequence = ids + pair_ids if pair else ids
             token_type_ids = [0] * len(ids) + ([1] * len(pair_ids) if pair else [])
 

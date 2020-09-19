@@ -448,6 +448,7 @@ class PreTrainedTokenizer(PreTrainedTokenizerBase):
         first_ids = get_input_ids(text)
         second_ids = get_input_ids(text_pair) if text_pair is not None else None
 
+        # @tag-squad-main-101
         return self.prepare_for_model(
             first_ids,
             pair_ids=second_ids,
