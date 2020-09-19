@@ -450,6 +450,7 @@ def load_and_cache_examples(args, tokenizer, evaluate=False, output_examples=Fal
             else:
                 examples = processor.get_train_examples(args.data_dir, filename=args.train_file)
 
+        # @tag-squad-main-107
         features, dataset = squad_convert_examples_to_features(
             examples=examples,
             tokenizer=tokenizer,

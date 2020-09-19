@@ -88,6 +88,7 @@ def _is_whitespace(c):
     return False
 
 
+# @tag-squad-main-105
 def squad_convert_example_to_features(
     example, max_seq_length, doc_stride, max_query_length, padding_strategy, is_training
 ):
@@ -291,6 +292,7 @@ def squad_convert_example_to_features_init(tokenizer_for_convert):
     tokenizer = tokenizer_for_convert
 
 
+# @tag-squad-main-106
 def squad_convert_examples_to_features(
     examples,
     tokenizer,
