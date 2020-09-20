@@ -21,6 +21,7 @@ from .utils import logging
 
 logger = logging.get_logger(__name__)
 
+# @tag-squad-main-300
 GPT2_PRETRAINED_CONFIG_ARCHIVE_MAP = {
     "gpt2": "https://s3.amazonaws.com/models.huggingface.co/bert/gpt2-config.json",
     "gpt2-medium": "https://s3.amazonaws.com/models.huggingface.co/bert/gpt2-medium-config.json",
