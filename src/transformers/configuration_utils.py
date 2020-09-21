@@ -339,6 +339,7 @@ class PretrainedConfig(object):
         elif os.path.isfile(pretrained_model_name_or_path) or is_remote_url(pretrained_model_name_or_path):
             config_file = pretrained_model_name_or_path
         else:
+            # @tag-squad-main-005A
             # @tag-squad-main-005 - config_file = hf_bucket_url(...)
             config_file = hf_bucket_url(
                 pretrained_model_name_or_path, filename=CONFIG_NAME, use_cdn=False, mirror=None

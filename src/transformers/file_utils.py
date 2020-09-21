@@ -573,7 +573,7 @@ def is_remote_url(url_or_filename):
     parsed = urlparse(url_or_filename)
     return parsed.scheme in ("http", "https")
 
-
+# @tag-squad-main-1001 - def hf_bucket_url()
 def hf_bucket_url(model_id: str, filename: str, use_cdn=True, mirror=None) -> str:
     """
     Resolve a model identifier, and a file name, to a HF-hosted url

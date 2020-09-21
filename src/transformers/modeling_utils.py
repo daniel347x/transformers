@@ -874,6 +874,7 @@ class PreTrainedModel(nn.Module, ModuleUtilsMixin, GenerationMixin):
                 )
                 archive_file = pretrained_model_name_or_path + ".index"
             else:
+                # @tag-squad-main-1000 - archive_file = hf_bucket_url
                 archive_file = hf_bucket_url(
                     pretrained_model_name_or_path,
                     filename=(TF2_WEIGHTS_NAME if from_tf else WEIGHTS_NAME),
