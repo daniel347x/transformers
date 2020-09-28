@@ -583,6 +583,7 @@ class SquadProcessor(DataProcessor):
 
         return examples
 
+    # @tag-squad-main-651
     def get_train_examples(self, data_dir, filename=None):
         """
         Returns the training examples from the data directory.
@@ -663,6 +664,7 @@ class SquadProcessor(DataProcessor):
         return examples
 
 
+# @tag-squad-main-650
 class SquadV1Processor(SquadProcessor):
     train_file = "train-v1.1.json"
     dev_file = "dev-v1.1.json"
