@@ -39,6 +39,7 @@ from .trainer_utils import (
     PREFIX_CHECKPOINT_DIR,
     BestRun,
     EvalPrediction,
+    EvaluationStrategy,
     HPSearchBackend,
     PredictionOutput,
     TrainOutput,
@@ -57,6 +58,8 @@ from .utils import logging
 
 _use_native_amp = False
 _use_apex = False
+
+PT_LR_SCHEDULER_WARNING = "Please also save or load the state of the optimzer when saving or loading the scheduler."
 
 # Check if Pytorch version >= 1.6 to switch between Native AMP and Apex
 if version.parse(torch.__version__) < version.parse("1.6"):
@@ -96,6 +99,14 @@ if is_ray_available():
     from ray import tune
 
 logger = logging.get_logger(__name__)
+
+
+def reissue_pt_warnings(caught_warnings):
+    # Reissue warnings that are not the PT_LR_SCHEDULER_WARNING
+    if len(caught_warnings) > 1:
+        for w in caught_warnings:
+            if w.category != UserWarning or w.message != PT_LR_SCHEDULER_WARNING:
+                warnings.warn(w.message, w.category)
 
 
 @contextmanager
@@ -351,6 +362,7 @@ class Trainer:
             sampler=train_sampler,
             collate_fn=self.data_collator,
             drop_last=self.args.dataloader_drop_last,
+            num_workers=self.args.dataloader_num_workers,
         )
 
     def _get_eval_sampler(self, eval_dataset: Dataset) -> Optional[torch.utils.data.sampler.Sampler]:
@@ -390,6 +402,7 @@ class Trainer:
             batch_size=self.args.eval_batch_size,
             collate_fn=self.data_collator,
             drop_last=self.args.dataloader_drop_last,
+            num_workers=self.args.dataloader_num_workers,
         )
 
     def get_test_dataloader(self, test_dataset: Dataset) -> DataLoader:
@@ -640,7 +653,9 @@ class Trainer:
             self.optimizer.load_state_dict(
                 torch.load(os.path.join(model_path, "optimizer.pt"), map_location=self.args.device)
             )
-            self.lr_scheduler.load_state_dict(torch.load(os.path.join(model_path, "scheduler.pt")))
+            with warnings.catch_warnings(record=True) as caught_warnings:
+                self.lr_scheduler.load_state_dict(torch.load(os.path.join(model_path, "scheduler.pt")))
+            reissue_pt_warnings(caught_warnings)
 
         model = self.model
         if self.args.fp16 and _use_apex:
@@ -692,7 +707,7 @@ class Trainer:
             # set global_step to global_step of last saved checkpoint from model path
             try:
                 self.global_step = int(model_path.split("-")[-1].split(os.path.sep)[0])
-                self.total_flos = getattr(model.config, "total_flos", 0)
+                self.total_flos = getattr(self._actual_model(model).config, "total_flos", 0)
 
                 epochs_trained = self.global_step // num_update_steps_per_epoch
                 steps_trained_in_current_epoch = self.global_step % (num_update_steps_per_epoch)
@@ -782,7 +797,10 @@ class Trainer:
 
                         self.log(logs)
 
-                    if self.args.evaluate_during_training and self.global_step % self.args.eval_steps == 0:
+                    if (
+                        self.args.evaluation_strategy == EvaluationStrategy.STEPS
+                        and self.global_step % self.args.eval_steps == 0
+                    ):
                         metrics = self.evaluate()
                         self._report_to_hp_search(trial, epoch, metrics)
 
@@ -806,6 +824,7 @@ class Trainer:
                             checkpoint_folder += f"-run-{run_id}"
                         output_dir = os.path.join(self.args.output_dir, checkpoint_folder)
 
+                        self.store_flos()
                         self.save_model(output_dir)
 
                         if self.is_world_process_zero():
@@ -814,16 +833,25 @@ class Trainer:
                         if is_torch_tpu_available():
                             xm.rendezvous("saving_optimizer_states")
                             xm.save(self.optimizer.state_dict(), os.path.join(output_dir, "optimizer.pt"))
-                            xm.save(self.lr_scheduler.state_dict(), os.path.join(output_dir, "scheduler.pt"))
+                            with warnings.catch_warnings(record=True) as caught_warnings:
+                                xm.save(self.lr_scheduler.state_dict(), os.path.join(output_dir, "scheduler.pt"))
+                            reissue_pt_warnings(caught_warnings)
                         elif self.is_world_process_zero():
                             torch.save(self.optimizer.state_dict(), os.path.join(output_dir, "optimizer.pt"))
-                            torch.save(self.lr_scheduler.state_dict(), os.path.join(output_dir, "scheduler.pt"))
+                            with warnings.catch_warnings(record=True) as caught_warnings:
+                                torch.save(self.lr_scheduler.state_dict(), os.path.join(output_dir, "scheduler.pt"))
+                            reissue_pt_warnings(caught_warnings)
 
                 epoch_pbar.update(1)
                 if self.args.max_steps > 0 and self.global_step >= self.args.max_steps:
                     break
             epoch_pbar.close()
             train_pbar.update(1)
+
+            if self.args.evaluation_strategy == EvaluationStrategy.EPOCH:
+                metrics = self.evaluate()
+                self._report_to_hp_search(trial, epoch, metrics)
+
             if self.args.tpu_metrics_debug or self.args.debug:
                 if is_torch_tpu_available():
                     # tpu-comment: Logging debug metrics for PyTorch/XLA (compile, execute times, ops, etc.)
@@ -1140,7 +1168,6 @@ class Trainer:
             raise ValueError("Trainer.model appears to not be a PreTrainedModel")
 
         xm.rendezvous("saving_checkpoint")
-        self._store_flos()
         self.model.save_pretrained(output_dir)
         if self.tokenizer is not None:
             self.tokenizer.save_pretrained(output_dir)
@@ -1153,7 +1180,6 @@ class Trainer:
         # They can then be reloaded using `from_pretrained()`
         if not isinstance(self.model, PreTrainedModel):
             raise ValueError("Trainer.model appears to not be a PreTrainedModel")
-        self._store_flos()
         self.model.save_pretrained(output_dir)
         if self.tokenizer is not None:
             self.tokenizer.save_pretrained(output_dir)
@@ -1164,7 +1190,7 @@ class Trainer:
             self.log_history, open(os.path.join(output_dir, "log_history.json"), "w"), indent=2, ensure_ascii=False
         )
 
-    def _store_flos(self):
+    def store_flos(self):
         # Storing the number of floating-point operations that went into the model
         if self.total_flos is not None:
             if self.args.local_rank != -1:
@@ -1334,9 +1360,9 @@ class Trainer:
         elif is_torch_tpu_available():
             # tpu-comment: Get all predictions and labels from all worker shards of eval dataset
             if preds is not None:
-                preds = nested_xla_mesh_reduce("eval_preds", preds)
+                preds = nested_xla_mesh_reduce(preds, "eval_preds")
             if label_ids is not None:
-                label_ids = nested_xla_mesh_reduce("eval_label_ids", label_ids, torch.cat)
+                label_ids = nested_xla_mesh_reduce(label_ids, "eval_label_ids")
             if eval_losses is not None:
                 eval_losses = xm.mesh_reduce("eval_losses", torch.tensor(eval_losses), torch.cat).tolist()
 
@@ -1438,15 +1464,29 @@ class Trainer:
             :obj:`int`: The number of floating-point operations.
         """
 
-        if isinstance(self.model, torch.nn.DataParallel) or isinstance(
-            self.model, torch.nn.parallel.DistributedDataParallel
-        ):
-            model = self.model.module
-        else:
-            model = self.model
+        model = self._actual_model(self.model)
 
         if hasattr(model, "floating_point_ops"):
             return model.floating_point_ops(inputs)
 
         else:
             return 0
+
+    @staticmethod
+    def _actual_model(
+        model: Union[torch.nn.DataParallel, torch.nn.parallel.DistributedDataParallel, torch.nn.modules.Module]
+    ) -> torch.nn.modules.Module:
+        """
+
+        Args:
+            model: (:obj:`Union[torch.nn.DataParallel, torch.nn.parallel.DistributedDataParallel, torch.nn.modules.Module]`):
+                Model object used during training
+
+        Returns:
+            :obj:`torch.nn.modules.Module`: unwrapped module
+        """
+        if isinstance(model, torch.nn.DataParallel) or isinstance(model, torch.nn.parallel.DistributedDataParallel):
+            model = model.module
+        else:
+            model = model
+        return model
