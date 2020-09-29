@@ -1170,6 +1170,7 @@ class AutoModelForSequenceClassification:
         """
         config = kwargs.pop("config", None)
         if not isinstance(config, PretrainedConfig):
+            # @tag-transformers-config-001
             config, kwargs = AutoConfig.from_pretrained(
                 pretrained_model_name_or_path, return_unused_kwargs=True, **kwargs
             )

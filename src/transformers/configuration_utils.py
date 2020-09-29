@@ -331,6 +331,7 @@ class PretrainedConfig(object):
             :obj:`Tuple[Dict, Dict]`: The dictionary(ies) that will be used to instantiate the configuration object.
 
         """
+        # @tag-transformers-config-003
         cache_dir = kwargs.pop("cache_dir", None)
         force_download = kwargs.pop("force_download", False)
         resume_download = kwargs.pop("resume_download", False)
@@ -344,6 +345,7 @@ class PretrainedConfig(object):
         else:
             # @tag-squad-main-005A
             # @tag-squad-main-005 - config_file = hf_bucket_url(...)
+            # @tag-transformers-config-004
             config_file = hf_bucket_url(
                 pretrained_model_name_or_path, filename=CONFIG_NAME, use_cdn=False, mirror=None
             )
@@ -360,9 +362,11 @@ class PretrainedConfig(object):
                 local_files_only=local_files_only,
             )
             # Load config dict
+            # @tag-transformers-config-005
             if resolved_config_file is None:
                 raise EnvironmentError
             # @tag-squad-main-005 - config_dict = cls._dict_from_json_file(resolved_config_file)
+            # @tag-transformers-config-006
             config_dict = cls._dict_from_json_file(resolved_config_file)
 
         except EnvironmentError:

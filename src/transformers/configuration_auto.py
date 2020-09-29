@@ -310,9 +310,11 @@ class AutoConfig:
             {'foo': False}
         """
         # @tag-squad-main-004 - config_dict, _ = PretrainedConfig.get_config_dict(pretrained_model_name_or_path, **kwargs)
+        # @tag-transformers-config-002
         config_dict, _ = PretrainedConfig.get_config_dict(pretrained_model_name_or_path, **kwargs)
 
         if "model_type" in config_dict:
+            # @tag-transformers-config-007
             config_class = CONFIG_MAPPING[config_dict["model_type"]]
             return config_class.from_dict(config_dict, **kwargs)
         else:
