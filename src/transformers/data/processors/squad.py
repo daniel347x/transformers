@@ -675,6 +675,7 @@ class SquadV2Processor(SquadProcessor):
     dev_file = "dev-v2.0.json"
 
 
+# @tag-squad-main-661
 class SquadExample:
     """
     A single training/test example for the Squad dataset, as loaded from disk.
@@ -738,6 +739,7 @@ class SquadExample:
             ]
 
 
+# @tag-squad-main-660
 class SquadFeatures:
     """
     Single squad example features to be fed to a model.
