@@ -218,6 +218,8 @@ def main():
         raise KeyError("the model {} you specified is not supported. You are welcome to add it and open a PR :)")
 
     tokenizer = tokenizer_class.from_pretrained(args.model_name_or_path)
+
+    # model_class - from above - is the NN model. model_name_or_path are the hyperparameters and will be autodownloaded as handled here.
     model = model_class.from_pretrained(args.model_name_or_path)
     model.to(args.device)
 
