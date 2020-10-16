@@ -237,8 +237,22 @@ class ModuleUtilsMixin:
                 batch_size, seq_length = input_shape
                 seq_ids = torch.arange(seq_length, device=device)
                 causal_mask = seq_ids[None, None, :].repeat(batch_size, seq_length, 1) <= seq_ids[None, :, None]
+                # in case past_key_values are used we need to add a prefix ones mask to the causal mask
                 # causal and attention masks must have same type with pytorch version < 1.3
                 causal_mask = causal_mask.to(attention_mask.dtype)
+
+                if causal_mask.shape[1] < attention_mask.shape[1]:
+                    prefix_seq_len = attention_mask.shape[1] - causal_mask.shape[1]
+                    causal_mask = torch.cat(
+                        [
+                            torch.ones(
+                                (batch_size, seq_length, prefix_seq_len), device=device, dtype=causal_mask.dtype
+                            ),
+                            causal_mask,
+                        ],
+                        axis=-1,
+                    )
+
                 extended_attention_mask = causal_mask[:, None, :, :] * attention_mask[:, None, None, :]
             else:
                 extended_attention_mask = attention_mask[:, None, None, :]
@@ -702,7 +716,7 @@ class PreTrainedModel(nn.Module, ModuleUtilsMixin, GenerationMixin):
         # If we save using the predefined names, we can load using `from_pretrained`
         output_model_file = os.path.join(save_directory, WEIGHTS_NAME)
 
-        if getattr(self.config, "xla_device", False):
+        if getattr(self.config, "xla_device", False) and is_torch_tpu_available():
             import torch_xla.core.xla_model as xm
 
             if xm.is_master_ordinal():
@@ -788,7 +802,7 @@ class PreTrainedModel(nn.Module, ModuleUtilsMixin, GenerationMixin):
                 :obj:`{'http': 'foo.bar:3128', 'http://hostname': 'foo.bar:4012'}`. The proxies are used on each
                 request.
             output_loading_info(:obj:`bool`, `optional`, defaults to :obj:`False`):
-                Whether ot not to also return a dictionnary containing missing keys, unexpected keys and error
+                Whether ot not to also return a dictionary containing missing keys, unexpected keys and error
                 messages.
             local_files_only(:obj:`bool`, `optional`, defaults to :obj:`False`):
                 Whether or not to only look at local files (e.g., not try doanloading the model).
