@@ -238,7 +238,6 @@ class TensorBoardCallback(TrainerCallback):
         if self.tb_writer:
             self.tb_writer.close()
 
-
 class WandbCallback(TrainerCallback):
     """
     A :class:`~transformers.TrainerCallback` that sends the logs to `Weight and Biases

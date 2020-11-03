@@ -15,7 +15,6 @@ from ...utils import logging
 
 logger = logging.get_logger(__name__)
 
-
 class TextDataset(Dataset):
     """
     This will be superseded by a framework-agnostic approach
