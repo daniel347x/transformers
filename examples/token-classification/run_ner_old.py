@@ -65,7 +65,8 @@ class ModelArguments:
     # If you want to tweak more attributes on your tokenizer, you should do it in a distinct script,
     # or just modify its tokenizer_config.json.
     cache_dir: Optional[str] = field(
-        default=None, metadata={"help": "Where do you want to store the pretrained models downloaded from s3"}
+        default=None,
+        metadata={"help": "Where do you want to store the pretrained models downloaded from huggingface.co"},
     )
 
 
@@ -253,7 +254,7 @@ def main():
         trainer.save_model()
         # For convenience, we also re-save the tokenizer to the same directory,
         # so that you can share your model easily on huggingface.co/models =)
-        if trainer.is_world_master():
+        if trainer.is_world_process_zero():
             tokenizer.save_pretrained(training_args.output_dir)
 
     # Evaluation
@@ -264,7 +265,7 @@ def main():
         result = trainer.evaluate()
 
         output_eval_file = os.path.join(training_args.output_dir, "eval_results.txt")
-        if trainer.is_world_master():
+        if trainer.is_world_process_zero():
             with open(output_eval_file, "w") as writer:
                 logger.info("***** Eval results *****")
                 for key, value in result.items():
@@ -290,7 +291,7 @@ def main():
         preds_list, _ = align_predictions(predictions, label_ids)
 
         output_test_results_file = os.path.join(training_args.output_dir, "test_results.txt")
-        if trainer.is_world_master():
+        if trainer.is_world_process_zero():
             with open(output_test_results_file, "w") as writer:
                 for key, value in metrics.items():
                     logger.info("  %s = %s", key, value)
@@ -298,7 +299,7 @@ def main():
 
         # Save predictions
         output_test_predictions_file = os.path.join(training_args.output_dir, "test_predictions.txt")
-        if trainer.is_world_master():
+        if trainer.is_world_process_zero():
             with open(output_test_predictions_file, "w") as writer:
                 with open(os.path.join(data_args.data_dir, "test.txt"), "r") as f:
                     token_classification_task.write_predictions_to_file(writer, f, preds_list)

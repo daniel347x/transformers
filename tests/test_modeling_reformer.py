@@ -174,7 +174,6 @@ class ReformerModelTester:
             attn_layers=self.attn_layers,
             pad_token_id=self.pad_token_id,
             hash_seed=self.hash_seed,
-            return_dict=True,
         )
 
         return (
@@ -570,6 +569,14 @@ class ReformerTesterMixin:
     def test_for_sequence_classification(self):
         config_and_inputs = self.model_tester.prepare_config_and_inputs()
         self.model_tester.create_and_check_reformer_for_sequence_classification(*config_and_inputs, is_decoder=False)
+
+    def test_retain_grad_hidden_states_attentions(self):
+        # reformer cannot keep gradients in attentions or hidden states
+        return
+
+    def test_resize_embeddings_untied(self):
+        # reformer cannot resize embeddings that easily
+        return
 
 
 @require_torch
