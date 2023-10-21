@@ -1,3 +1,7 @@
+---
+status: thinking
+---
+
 <!---
 Copyright 2020 The HuggingFace Team. All rights reserved.
 
@@ -69,9 +73,9 @@ limitations under the License.
 
 These models can be applied on:
 
-* 📝 Text, for tasks like text classification, information extraction, question answering, summarization, translation, text generation, in over 100 languages.
-* 🖼️ Images, for tasks like image classification, object detection, and segmentation.
-* 🗣️ Audio, for tasks like speech recognition and audio classification.
+- 📝 Text, for tasks like text classification, information extraction, question answering, summarization, translation, text generation, in over 100 languages.
+- 🖼️ Images, for tasks like image classification, object detection, and segmentation.
+- 🗣️ Audio, for tasks like speech recognition and audio classification.
 
 Transformer models can also perform tasks on **several modalities combined**, such as table question answering, optical character recognition, information extraction from scanned documents, video classification, and visual question answering.
 
@@ -114,7 +118,6 @@ In Multimodal tasks:
 - [Zero-shot Image Classification with CLIP](https://huggingface.co/openai/clip-vit-large-patch14)
 - [Document Question Answering with LayoutLM](https://huggingface.co/impira/layoutlm-document-qa)
 - [Zero-shot Video Classification with X-CLIP](https://huggingface.co/docs/transformers/model_doc/xclip)
-
 
 ## 100 projects using Transformers
 
@@ -191,6 +194,7 @@ Here we get a list of objects detected in the image, with a box surrounding the 
 You can learn more about the tasks supported by the `pipeline` API in [this tutorial](https://huggingface.co/docs/transformers/task_summary).
 
 In addition to `pipeline`, to download and use any of the pretrained models on your given task, all it takes is three lines of code. Here is the PyTorch version:
+
 ```python
 >>> from transformers import AutoTokenizer, AutoModel
 
@@ -202,6 +206,7 @@ In addition to `pipeline`, to download and use any of the pretrained models on y
 ```
 
 And here is the equivalent code for TensorFlow:
+
 ```python
 >>> from transformers import AutoTokenizer, TFAutoModel
 
@@ -224,17 +229,17 @@ The model itself is a regular [Pytorch `nn.Module`](https://pytorch.org/docs/sta
     - Few user-facing abstractions with just three classes to learn.
     - A unified API for using all our pretrained models.
 
-1. Lower compute costs, smaller carbon footprint:
+2. Lower compute costs, smaller carbon footprint:
     - Researchers can share trained models instead of always retraining.
     - Practitioners can reduce compute time and production costs.
     - Dozens of architectures with over 60,000 pretrained models across all modalities.
 
-1. Choose the right framework for every part of a model's lifetime:
+3. Choose the right framework for every part of a model's lifetime:
     - Train state-of-the-art models in 3 lines of code.
     - Move a single model between TF2.0/PyTorch/JAX frameworks at will.
     - Seamlessly pick the right framework for training, evaluation and production.
 
-1. Easily customize a model or an example to your needs:
+4. Easily customize a model or an example to your needs:
     - We provide examples for each architecture to reproduce the results published by its original authors.
     - Model internals are exposed as consistently as possible.
     - Model files can be used independently of the library for quick experiments.
@@ -278,7 +283,7 @@ conda install -c huggingface transformers
 
 Follow the installation pages of Flax, PyTorch or TensorFlow to see how to install them with conda.
 
-> **_NOTE:_**  On Windows, you may be prompted to activate Developer Mode in order to benefit from caching. If this is not an option for you, please let us know in [this issue](https://github.com/huggingface/huggingface_hub/issues/1062).
+> ***NOTE:*** On Windows, you may be prompted to activate Developer Mode in order to benefit from caching. If this is not an option for you, please let us know in [this issue](https://github.com/huggingface/huggingface_hub/issues/1062).
 
 ## Model architectures
 
@@ -525,7 +530,6 @@ To check if each model has an implementation in Flax, PyTorch or TensorFlow, or 
 
 These implementations have been tested on several datasets (see the example scripts) and should match the performance of the original implementations. You can find more details on performance in the Examples section of the [documentation](https://github.com/huggingface/transformers/tree/main/examples).
 
-
 ## Learn more
 
 | Section | Description |
@@ -540,6 +544,7 @@ These implementations have been tested on several datasets (see the example scri
 ## Citation
 
 We now have a [paper](https://www.aclweb.org/anthology/2020.emnlp-demos.6/) you can cite for the 🤗 Transformers library:
+
 ```bibtex
 @inproceedings{wolf-etal-2020-transformers,
     title = "Transformers: State-of-the-Art Natural Language Processing",
